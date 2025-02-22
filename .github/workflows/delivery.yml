@@ -46,20 +46,8 @@ jobs:
 
     - name: Release
       uses: softprops/action-gh-release@v2
+      env:
+        GH_TOKEN: ${{ secrets.PAT_TOKEN }}
       with:
         tag_name: v${{ env.VERSION }}
         generate_release_notes: true
-
-    # - name: Create Release
-    #   if: ${{ env.VERSION != '' }}
-    #   uses: actions/create-release@v1
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   with:
-    #     tag_name: v${{ env.VERSION }}
-    #     release_name: v${{ env.VERSION }}
-    #     draft: false
-    #     prerelease: false
-
-    # - name: Run Changelog CI
-    #   uses: saadmk11/changelog-ci@v1.1.2
