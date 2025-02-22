@@ -1,0 +1,54 @@
+name: Delivery Release Workflow
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+      - master
+
+jobs:
+  tag-and-release:
+    name: Create Tag and release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Extract version from branch name
+      id: extract_version
+      run: echo "VERSION=${GITHUB_HEAD_REF#release/}" >> $GITHUB_ENV
+
+    - name: Check if version is undefined
+      run: |
+        if [ -z "${{ env.VERSION }}" ]; then
+          echo "Error: Release version is undefined"
+          exit 1
+        fi
+
+    - name: Create Git Tag
+      if: ${{ env.VERSION != '' }}
+      run: |
+        git config --global user.name "github-actions"
+        git config --global user.email "actions@github.com"
+        git tag -a "v${{ env.VERSION }}" -m "Release version ${{ env.VERSION }}"
+        git push origin "v${{ env.VERSION }}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Create Release
+      if: ${{ env.VERSION != '' }}
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ env.VERSION }}
+        release_name: v${{ env.VERSION }}
+        draft: false
+        prerelease: false
+
+    # - name: Run Changelog CI
+    #   uses: saadmk11/changelog-ci@v1.1.2
