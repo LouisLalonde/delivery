@@ -39,11 +39,6 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Draft
-      uses: release-drafter/release-drafter@v6.1.0
-      with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
     - name: Release
       uses: softprops/action-gh-release@v2
       env:
