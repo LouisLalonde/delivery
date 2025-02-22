@@ -39,6 +39,27 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Draft
+      uses: release-drafter/release-drafter@v6.1.0
+      with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Release
+      uses: softprops/action-gh-release@v2
+
+    - name: Update Changelog
+      uses: stefanzweifel/changelog-updater-action@v1
+      with:
+        release-notes: ${{ github.event.release.body }}
+        latest-version: ${{ github.event.release.tag_name }}
+    
+    - name: Commit updated CHANGELOG
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        branch: main
+        commit_message: Update CHANGELOG
+        file_pattern: CHANGELOG.md
+
     # - name: Create Release
     #   if: ${{ env.VERSION != '' }}
     #   uses: actions/create-release@v1
