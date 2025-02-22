@@ -48,19 +48,7 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         tag_name: v${{ env.VERSION }}
-
-    - name: Update Changelog
-      uses: stefanzweifel/changelog-updater-action@v1
-      with:
-        release-notes: ${{ github.event.release.body }}
-        latest-version: ${{ github.event.release.tag_name }}
-    
-    - name: Commit updated CHANGELOG
-      uses: stefanzweifel/git-auto-commit-action@v5
-      with:
-        branch: main
-        commit_message: Update CHANGELOG
-        file_pattern: CHANGELOG.md
+        generate_release_notes: true
 
     # - name: Create Release
     #   if: ${{ env.VERSION != '' }}
